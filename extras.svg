@@ -11,7 +11,7 @@
       </style>
 
       <div class="container">
-        <img src = "./Analysis/Plots/Modelled and observed counts by age.png">
+        <img src = "./Analysis/Plots/Modelled and observed counts by age.png"></img>
       </div>
     </div>
   </foreignObject>
