@@ -4,9 +4,25 @@ This project models the accumulation of long-term health conditions across the l
 
 The data used in this project can be downloaded from the UK Data Service ([Series ID 2000053](https://beta.ukdataservice.ac.uk/datacatalogue/series/series?id=2000053)). Within the Understanding Society series, the dataset used is _Understanding Society: Waves 1-12, 2009-2021 and Harmonised BHPS: Waves 1-18, 1991-2009_ (Study number: 6614, [DOI: 10.5255/UKDA-SN-6614-18](https://doi.org/10.5255/UKDA-SN-6614-18)).
 
+### Example output:
+
 &nbsp;
 &nbsp;
 
 <p align="center">
   <img width="600" src="./Analysis/Plots/Modelled and observed counts by age.png">
+</p>
+
+&nbsp;
+&nbsp;
+
+<p align="center">
+  <img width="600" src="./Analysis/Plots/Condition counts by age group and ethnicity.png">
+</p>
+
+&nbsp;
+&nbsp;
+
+<p align="center">
+  <img width="800" src="./Analysis/Plots/Modelled and observed counts by age and ethnicity.png">
 </p>
