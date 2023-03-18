@@ -4,6 +4,4 @@ This project models the accumulation of long-term health conditions across the l
 
 The data used in this project can be downloaded from the UK Data Service ([Series ID 2000053](https://beta.ukdataservice.ac.uk/datacatalogue/series/series?id=2000053)). Within the Understanding Society series, the dataset used is _Understanding Society: Waves 1-12, 2009-2021 and Harmonised BHPS: Waves 1-18, 1991-2009_ (Study number: 6614, [DOI: 10.5255/UKDA-SN-6614-18](https://doi.org/10.5255/UKDA-SN-6614-18)).
 
-<div style="width: 100%;">
-  <img src="./extras.svg" style="width: 100%;" alt="Click to see the source">
-</div>
+<img src="extras.svg" width="800" height="800">
