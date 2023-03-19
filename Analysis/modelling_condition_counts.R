@@ -174,8 +174,8 @@ ethnicity_age_counts<- rbind(mutate(asian_age_counts, broad_ethnic_group = "Sout
 
 ethnicity_age_counts%>%
   ggplot()+
-  geom_point(aes(x = broad_age_group, y = condition_count, colour = ethnicity, group = ethnicity), position = position_dodge(width = 0.4))+
-  geom_errorbar(aes(x = broad_age_group, ymin = ci_l, ymax = ci_u, colour = ethnicity, group = ethnicity), position = position_dodge(width = 0.4), width = 0.1)+
+  geom_point(aes(x = broad_age_group, y = condition_count, colour = broad_ethnic_group, group = broad_ethnic_group), position = position_dodge(width = 0.4))+
+  geom_errorbar(aes(x = broad_age_group, ymin = ci_l, ymax = ci_u, colour = broad_ethnic_group, group = broad_ethnic_group), position = position_dodge(width = 0.4), width = 0.1)+
   scale_color_economist(name = "")+
   theme_economist()+
   theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5),
@@ -186,7 +186,7 @@ ethnicity_age_counts%>%
         plot.title.position = "plot",
         plot.title = element_text(margin = margin(10,0,20,0)),
         plot.margin = margin(20,20,20,20))+
-  labs(x = "Age group", y = "Condition count", title = "Long-term condition counts by age group and\nethnicity", caption = "Understanding Society Wave 10\nN = 34220\nError bar = 95% conf. interval")
+  labs(x = "Age group", y = "Condition count", title = "Observed condition counts by age group and\nethnicity", caption = "Understanding Society Wave 10\nN = 34220\nError bar = 95% conf. interval")
 
 ggsave("Plots/Condition counts by age group and ethnicity.png", units = "in", width = 6, height = 5, dpi = 1000)
 
@@ -243,7 +243,7 @@ ggplot()+
   geom_point(data = ethnicity_age_counts, aes(x = age, y = condition_count, shape = "Observed", color = broad_ethnic_group), position = position_dodge(width = 0.5))+
   geom_errorbar(data = ethnicity_age_counts, aes(x = age, ymin = ci_l, ymax = ci_u, group = broad_ethnic_group, color = broad_ethnic_group), width = 0.5, position = position_dodge(width = 0.5))+
   geom_text(data = ethnicity_age_counts, aes(x = age, y = ci_u + 0.05, label = broad_age_group), size = 3, angle = 90, hjust = 0)+
-  scale_color_economist(name = "", labels = c("Modelled White", "Modelled Black", "Modelled South Asian")+
+  scale_color_economist(name = "", labels = c("Modelled White", "Modelled Black", "Modelled South Asian"))+
   scale_shape(name = "")+
   scale_x_continuous(breaks = seq(20,90,10), limits = c(15,90))+
   facet_wrap(~broad_ethnic_group)+
@@ -253,10 +253,43 @@ ggplot()+
         legend.text = element_text(size = 10),
         legend.box.margin = margin(0,0,0,0),
         plot.title.position = "plot",
-        plot.title = element_text(margin = margin(10,0,20,0)),
+        plot.title = element_text(margin = margin(10,0,10,0)),
         plot.margin = margin(20,20,20,20),
         strip.text = element_blank())+
-  labs(x = "Age", y = "Condition count", title = "Modelled and observed condition counts by age and ethnicity", caption = "Understanding Society Wave 10\nN = 34220\nError bar = 95% conf. interval\nLabels on plots are age groups for observed counts")+
+  labs(x = "Age", y = "Condition count", title = "Modelled and observed condition counts by age and ethnicity", subtitle ="Model with ethnicity-age iteraction term", caption = "Understanding Society Wave 10\nN = 34220\nError bar = 95% conf. interval\nLabels on plots are age groups for observed counts")+
   guides(colour = guide_legend(override.aes = list(shape = c(NA,NA,NA))))
-?guide_legend
-ggsave("Plots/Modelled and observed counts by age and ethnicity.png", units = "in", width = 9, height = 5, dpi = 1000)
+
+ggsave("Plots/Modelled and observed counts by age and ethnicity with age-ethnicity interaction.png", units = "in", width = 9, height = 5, dpi = 1000)
+
+
+
+# Run quasi-poisson regression of counts with age, age-squared, ethnicity and ethnicity-age interaction and ethnicity-agesquared interaction
+m5<- svyglm(condition_count ~ age + I(age^2) + broad_ethnic_group + (age*broad_ethnic_group) + (I(age^2)*broad_ethnic_group), svy_df, family = quasipoisson())
+summary(m5)
+
+# Plot the modelled and observed counts
+preds_m5<- predictions(model = m5, newdata = datagrid(model = m5, age = 16:80, broad_ethnic_group = c("White", "Black", "South Asian")))
+
+ggplot()+
+  geom_line(data = preds_m5, aes(x = age, y = estimate, color = broad_ethnic_group))+
+  geom_point(data = ethnicity_age_counts, aes(x = age, y = condition_count, shape = "Observed", color = broad_ethnic_group), position = position_dodge(width = 0.5))+
+  geom_errorbar(data = ethnicity_age_counts, aes(x = age, ymin = ci_l, ymax = ci_u, group = broad_ethnic_group, color = broad_ethnic_group), width = 0.5, position = position_dodge(width = 0.5))+
+  geom_text(data = ethnicity_age_counts, aes(x = age, y = ci_u + 0.05, label = broad_age_group), size = 3, angle = 90, hjust = 0)+
+  scale_color_economist(name = "", labels = c("Modelled White", "Modelled Black", "Modelled South Asian"))+
+  scale_shape(name = "")+
+  scale_x_continuous(breaks = seq(20,90,10), limits = c(15,90))+
+  scale_y_continuous(limits = c(0,1.5))+
+  facet_wrap(~broad_ethnic_group)+
+  theme_economist()+
+  theme(axis.title.x = element_text(margin = margin(10,0,10,0)),
+        axis.title.y = element_text(margin = margin(0,10,0,0)),
+        legend.text = element_text(size = 10),
+        legend.box.margin = margin(0,0,0,0),
+        plot.title.position = "plot",
+        plot.title = element_text(margin = margin(10,0,10,0)),
+        plot.margin = margin(20,20,20,20),
+        strip.text = element_blank())+
+  labs(x = "Age", y = "Condition count", title = "Modelled and observed condition counts by age and ethnicity", subtitle = bquote("Model with ethnicity-age and ethnicity-"*age^2*" interaction terms"), caption = "Understanding Society Wave 10\nN = 34220\nError bar = 95% conf. interval\nLabels on plots are age groups for observed counts")+
+  guides(colour = guide_legend(override.aes = list(shape = c(NA,NA,NA))))
+
+ggsave("Plots/Modelled and observed counts by age and ethnicity with age-ethnicity and agesqrd-ethnicity interaction.png", units = "in", width = 9, height = 5, dpi = 1000)

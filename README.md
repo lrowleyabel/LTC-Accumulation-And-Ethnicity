@@ -24,5 +24,12 @@ The data used in this project can be downloaded from the UK Data Service ([Serie
 &nbsp;
 
 <p align="center">
-  <img width="800" src="./Analysis/Plots/Modelled and observed counts by age and ethnicity.png">
+  <img width="800" src="./Analysis/Plots/Modelled and observed counts by age and ethnicity with age-ethnicity interaction.png">
+</p>
+
+&nbsp;
+&nbsp;
+
+<p align="center">
+  <img width="800" src="./Analysis/Plots/Modelled and observed counts by age and ethnicity with age-ethnicity and agesqrd-ethnicity interaction.png">
 </p>
